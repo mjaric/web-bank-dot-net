@@ -1,0 +1,69 @@
+akka {
+    stdout-loglevel = DEBUG
+    loglevel = DEBUG
+    log-config-on-start = on 
+    loggers=["Akka.Logger.NLog.NLogLogger, Akka.Logger.NLog"]
+    
+    persistence {
+        max-concurrent-recoveries = 50
+        journal {
+            plugin = "akka.persistence.journal.eventstore"
+            eventstore {
+                # qualified type name of the EventStore persistence journal actor
+                class = "Akka.Persistence.EventStore.Journal.EventStoreJournal, Akka.Persistence.EventStore"
+    
+                # connection string used for database access
+                connection-string = "ConnectTo=tcp://admin:changeit@localhost:1113; HeartBeatTimeout=500"
+                
+                # connection name used for database access
+                connection-name = "AccountsApp"
+    
+                # dispatcher used to drive journal actor
+                plugin-dispatcher = "akka.actor.default-dispatcher"
+            
+                #how many events to pull at a time while reading
+                read-batch-size = 500
+                
+                #which adapter to use
+                adapter = "default"
+            }
+            #auto-start-journals = ["akka.persistence.journal.eventstore"]
+        }
+    }
+	actor {
+	    debug {  
+            # receive = on 
+            # autoreceive = on
+            # lifecycle = on
+            # event-stream = on
+            # unhandled = on
+        }
+		provider = cluster
+		# deployment {
+		#     /signalr {
+		#         router = broadcast-group
+		#         routees.paths = ["/user/websocket"]
+		#         cluster {
+        #             enabled = on
+        #             max-nr-of-instances-per-node = 1
+        #             allow-local-routees = off
+        #             use-role = webbank
+        #         }
+		#     }
+		# }
+	}
+						
+	remote {
+		dot-netty.tcp {
+            hostname = "127.0.0.1"
+            port = 8000
+            maximum-frame-size = 256000b
+        }
+	}			
+
+	cluster {
+		#will inject this node as a self-seed node at run-time
+		seed-nodes = ["akka.tcp://WebBank@127.0.0.1:8000"]
+		roles = ["accounts"]
+	}
+}
