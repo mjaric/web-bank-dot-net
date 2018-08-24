@@ -247,6 +247,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sagas\TransactionSaga.cs" />
     <Compile Include="Sagas\TransactionSupervisor.cs" />
+    <Compile Include="Subscriptions\TransactionStream.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
